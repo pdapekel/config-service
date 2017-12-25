@@ -1,0 +1,35 @@
+server:
+  port: ${PORT:8888}
+
+security:
+  user:
+    name: system
+    password: "{cipher}c80c892954438ee57485bc677c72721ccc4adc370243a1deeb0a6174ab5070c4"
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/pdapekel/config-repo
+# it's an open account, so we don't need credentials
+#          username: ...
+#          password: ...
+# it's possible to keep properties in different directories, but it's need to change config server for every new service
+#          search-paths: auth-service, account-service
+        encrypt:
+          enabled: false
+
+#client eureka settings
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+# Connect without credentials
+#      defaultZone: ${vcap.services.eureka-service.credentials.uri:http://127.0.0.1:8761}/eureka/
+# Connect with credentials
+# We have the credentials at eureka service and config service
+      defaultZone: http://${security.user.name}:${security.user.password}@127.0.0.1:8761/eureka/
